@@ -2,11 +2,9 @@ const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
-const path = require('path');
 
 const app = express();
 app.use(cors()); // CORSミドルウェアを適用
-app.use(express.static(path.join(__dirname, 'build'))); // ビルドディレクトリを静的ファイルとして使用
 
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -29,6 +27,7 @@ io.on('connection', (socket) => {
   });
 });
 
-server.listen(() => {
-  console.log(`Server running`);
+const PORT = process.env.PORT || 4000;
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
