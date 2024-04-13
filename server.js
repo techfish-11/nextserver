@@ -1,12 +1,12 @@
-// server.js
-
-import express from 'express';
-import http from 'http';
-import { Server } from 'socket.io';
-import cors from 'cors';
+const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
+const cors = require('cors');
+const path = require('path');
 
 const app = express();
 app.use(cors()); // CORSミドルウェアを適用
+app.use(express.static(path.join(__dirname, 'build'))); // ビルドディレクトリを静的ファイルとして使用
 
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -23,13 +23,12 @@ io.on('connection', (socket) => {
     console.log('User disconnected');
   });
 
-  socket.on('message', (message) => {
-    console.log('Message received: ' + message);
-    io.emit('message', message); // すべてのクライアントにメッセージを送信
+  socket.on('message', (data) => {
+    console.log('Message received: ' + data.message);
+    io.emit('message', data); // すべてのクライアントにメッセージを送信
   });
 });
 
-const PORT = process.env.PORT || 4000;
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+server.listen(() => {
+  console.log(`Server running`);
 });
